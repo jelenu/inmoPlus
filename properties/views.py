@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework.parsers import MultiPartParser, FormParser
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Property
 from .serializers import PropertySerializer
 from .permissions import IsAgentOrAdmin
@@ -10,6 +11,8 @@ class PropertyListView(generics.ListAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']  # Permite filtrar por el campo 'status'
 
 class PropertyDetailView(generics.RetrieveAPIView):
     queryset = Property.objects.all()
