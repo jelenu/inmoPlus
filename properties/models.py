@@ -1,6 +1,5 @@
+from django.conf import settings
 from django.db import models
-
-# Create your models here.
 
 class Property(models.Model):
     STATUS_CHOICES = [
@@ -21,6 +20,12 @@ class Property(models.Model):
     longitude = models.FloatField(null=True, blank=True, verbose_name="Longitud")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Última actualización")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="properties",
+        verbose_name="Propietario"
+    )
 
     def __str__(self):
         return self.title

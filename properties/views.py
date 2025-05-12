@@ -5,33 +5,37 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Property
 from .serializers import PropertySerializer
-from .permissions import IsAgentOrAdmin
+from .permissions import IsOwnerOrAdmin
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 
 class PropertyListView(generics.ListAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['status']  # Permite filtrar por el campo 'status'
+    filterset_fields = ['status']
 
 class PropertyDetailView(generics.RetrieveAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
     permission_classes = [permissions.IsAuthenticated]
 
-class PropertyCreateView(generics.CreateAPIView):
+class PropertyCreateView(CreateAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
-    permission_classes = [IsAgentOrAdmin]
-    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 class PropertyUpdateView(generics.UpdateAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
-    permission_classes = [IsAgentOrAdmin]
+    permission_classes = [IsOwnerOrAdmin]
     parser_classes = [MultiPartParser, FormParser]
 
 class PropertyDeleteView(generics.DestroyAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
-    permission_classes = [IsAgentOrAdmin]
+    permission_classes = [IsOwnerOrAdmin]

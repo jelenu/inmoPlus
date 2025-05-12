@@ -13,12 +13,17 @@ class PropertySerializer(serializers.ModelSerializer):
     delete_images = serializers.ListField(
         child=serializers.IntegerField(), write_only=True, required=False
     )
+    
+    owner_first_name = serializers.CharField(source='owner.first_name', read_only=True)
+    owner_last_name = serializers.CharField(source='owner.last_name', read_only=True)
 
     class Meta:
         model = Property
         fields = [
             'id', 'title', 'description', 'price', 'status', 'address',
-            'latitude', 'longitude', 'created_at', 'updated_at', 'images', 'delete_images'
+            'latitude', 'longitude', 'created_at', 'updated_at',
+            'images', 'delete_images',
+            'owner_first_name', 'owner_last_name',
         ]
 
     def create(self, validated_data):
