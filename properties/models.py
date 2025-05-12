@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 
 class Property(models.Model):
+
+    #Choices for property status
     STATUS_CHOICES = [
         ("available", "Disponible"),
         ("sold", "Vendida"),
@@ -20,6 +22,8 @@ class Property(models.Model):
     longitude = models.FloatField(null=True, blank=True, verbose_name="Longitud")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Última actualización")
+    
+    # ForeignKey to the user model
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -30,6 +34,7 @@ class Property(models.Model):
     def __str__(self):
         return self.title
 
+# PropertyImage model to handle images related to properties
 class PropertyImage(models.Model):
     property = models.ForeignKey(
         Property, on_delete=models.CASCADE, related_name="images", verbose_name="Propiedad"

@@ -3,6 +3,7 @@ from .models import Property, PropertyImage
 from django.core.exceptions import PermissionDenied
 import os
 
+
 class PropertyImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyImage
@@ -13,7 +14,7 @@ class PropertySerializer(serializers.ModelSerializer):
     delete_images = serializers.ListField(
         child=serializers.IntegerField(), write_only=True, required=False
     )
-    
+    # Read only fields
     owner_first_name = serializers.CharField(source='owner.first_name', read_only=True)
     owner_last_name = serializers.CharField(source='owner.last_name', read_only=True)
 
@@ -21,11 +22,10 @@ class PropertySerializer(serializers.ModelSerializer):
         model = Property
         fields = [
             'id', 'title', 'description', 'price', 'status', 'address',
-            'latitude', 'longitude', 'created_at', 'updated_at',
-            'images', 'delete_images',
-            'owner_first_name', 'owner_last_name',
+            'latitude', 'longitude', 'created_at', 'updated_at', 'images', 'delete_images'
         ]
 
+    # Create method to handle the creation of Property and its images
     def create(self, validated_data):
         images_data = self.context['request'].FILES.getlist('images')
         property_instance = Property.objects.create(**validated_data)
@@ -33,29 +33,29 @@ class PropertySerializer(serializers.ModelSerializer):
             PropertyImage.objects.create(property=property_instance, image=image_data)
         return property_instance
 
+    # Update method to handle the update of Property and its images
     def update(self, instance, validated_data):
         # Obtén las nuevas imágenes de la solicitud
         images_data = self.context['request'].FILES.getlist('images')
 
-        # Eliminar imágenes especificadas
+        # Delete images if specified
         delete_images = validated_data.pop('delete_images', [])
         for image_id in delete_images:
             try:
                 image_instance = PropertyImage.objects.get(id=image_id, property=instance)
-                # Elimina el archivo físico de la carpeta
+                # Delete the image file from the filesystem
                 if image_instance.image and os.path.isfile(image_instance.image.path):
                     os.remove(image_instance.image.path)
-                # Elimina la relación en la base de datos
+                # Delete the image instance from the database
                 image_instance.delete()
             except PropertyImage.DoesNotExist:
                 raise PermissionDenied("No tienes permiso para eliminar esta imagen.")
 
-        # Actualiza los campos de la propiedad
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        # Agrega las nuevas imágenes sin eliminar las existentes
+        # Add new images
         for image_data in images_data:
             PropertyImage.objects.create(property=instance, image=image_data)
 
