@@ -53,3 +53,24 @@ class PropertiesListTests(TestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    # ! Test for authenticated user accessing property detail
+    def test_authenticated_user_access_property_detail(self):
+        jwt_token = self.get_jwt_token(self.user)
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {jwt_token}")
+        
+        url = reverse("property-detail", args=[self.property.id])
+        
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.data, dict)
+        self.assertGreater(len(response.data), 0)
+
+    # ! Test for unauthenticated user accessing property detail
+    def test_unauthenticated_user_access_property_detail(self):
+        url = reverse("property-detail", args=[self.property.id])
+        
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
