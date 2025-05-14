@@ -5,7 +5,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Property
 from .serializers import PropertySerializer
-from .permissions import IsOwnerOrAdmin
+from .permissions import IsOwnerOrAdmin, IsAgentOrAdmin
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -24,9 +24,10 @@ class PropertyDetailView(generics.RetrieveAPIView):
 class PropertyCreateView(CreateAPIView):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAgentOrAdmin]  # Apply the custom permission
 
     def perform_create(self, serializer):
+        # Automatically set the owner to the authenticated user
         serializer.save(owner=self.request.user)
 
 class PropertyUpdateView(generics.UpdateAPIView):

@@ -8,3 +8,9 @@ class IsOwnerOrAdmin(BasePermission):
         if request.user.role == 'agent' and obj.owner == request.user:
             return True
         return False
+
+class IsAgentOrAdmin(BasePermission):
+    
+    def has_permission(self, request, view):
+        # Allow only if the user is authenticated and has the role 'agent' or 'admin'
+        return request.user.is_authenticated and request.user.role in ['agent', 'admin']
