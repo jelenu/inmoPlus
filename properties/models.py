@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-
+import os
 class Property(models.Model):
 
     #Choices for property status
@@ -31,16 +31,35 @@ class Property(models.Model):
         verbose_name="Propietario"
     )
 
+    def delete(self, *args, **kwargs):
+        for image in self.images.all():
+            image.delete()
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return self.title
 
-# PropertyImage model to handle images related to properties
 class PropertyImage(models.Model):
     property = models.ForeignKey(
-        Property, on_delete=models.CASCADE, related_name="images", verbose_name="Propiedad"
+        'properties.Property',
+        on_delete=models.CASCADE,
+        related_name="images",
+        verbose_name="Propiedad"
     )
-    image = models.ImageField(upload_to="property_images/", verbose_name="Imagen")
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de subida")
+    image = models.ImageField(
+        upload_to="property_images/",
+        verbose_name="Imagen"
+    )
+    uploaded_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha de subida"
+    )
 
     def __str__(self):
         return f"Imagen de {self.property.title}"
+
+    def delete(self, *args, **kwargs):
+        if self.image and self.image.path and os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        super().delete(*args, **kwargs)
+
