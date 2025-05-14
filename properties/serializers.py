@@ -1,13 +1,14 @@
 from rest_framework import serializers
 from .models import Property, PropertyImage
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 import os
 
 
 class PropertyImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyImage
-        fields = ['id', 'image', 'uploaded_at']
+        fields = ['id', 'property', 'image']
+
 
 class PropertySerializer(serializers.ModelSerializer):
     images = PropertyImageSerializer(many=True, required=False)
@@ -29,6 +30,13 @@ class PropertySerializer(serializers.ModelSerializer):
     # Create method to handle the creation of Property and its images
     def create(self, validated_data):
         images_data = self.context['request'].FILES.getlist('images')
+
+        # Validate all images before creating the property
+        for image_data in images_data:
+            if not image_data.content_type.startswith('image/'):
+                raise serializers.ValidationError("Only image files are allowed.")
+
+        # Create the property only if all images are valid
         property_instance = Property.objects.create(**validated_data)
         for image_data in images_data:
             PropertyImage.objects.create(property=property_instance, image=image_data)
@@ -38,6 +46,11 @@ class PropertySerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # Obtén las nuevas imágenes de la solicitud
         images_data = self.context['request'].FILES.getlist('images')
+
+        # Validate all new images before updating the property
+        for image_data in images_data:
+            if not image_data.content_type.startswith('image/'):
+                raise serializers.ValidationError("Only image files are allowed.")
 
         # Delete images if specified
         delete_images = validated_data.pop('delete_images', [])
