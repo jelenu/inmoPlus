@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.models import CustomUser
 from properties.models import Property, PropertyImage
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 class PropertiesDeleteTests(TestCase):
     def setUp(self):
@@ -55,6 +56,11 @@ class PropertiesDeleteTests(TestCase):
             price=100000,
             address="123 Property Street",
             owner=self.agent1_user,
+        )
+        # * Add an initial image to the property
+        self.initial_image = PropertyImage.objects.create(
+            property=self.property,
+            image=SimpleUploadedFile("initial_image.jpg", b"initial_image_data", content_type="image/jpeg"),
         )
 
         # * ApiClient instance
