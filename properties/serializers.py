@@ -22,7 +22,8 @@ class PropertySerializer(serializers.ModelSerializer):
         model = Property
         fields = [
             'id', 'title', 'description', 'price', 'status', 'address',
-            'latitude', 'longitude', 'created_at', 'updated_at', 'images', 'delete_images'
+            'latitude', 'longitude', 'created_at', 'updated_at', 'images', 'delete_images',
+            'owner_first_name', 'owner_last_name'
         ]
 
     # Create method to handle the creation of Property and its images

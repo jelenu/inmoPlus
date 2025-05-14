@@ -8,7 +8,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('', PropertyListView.as_view(), name='property-list'),
+    path('', PropertyListView.as_view(), name='properties-list'),
     path('<int:pk>/', PropertyDetailView.as_view(), name='property-detail'),
     path('create/', PropertyCreateView.as_view(), name='property-create'),
     path('<int:pk>/update/', PropertyUpdateView.as_view(), name='property-update'),
