@@ -1,7 +1,4 @@
-from rest_framework.test import APIClient
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from accounts.models import CustomUser
 from properties.models import Property
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile

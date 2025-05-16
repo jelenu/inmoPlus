@@ -1,10 +1,7 @@
-from django.test import TestCase
-from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import reverse
 from accounts.models import CustomUser
 from clients.models import Client
-from rest_framework_simplejwt.tokens import RefreshToken
 from common_tests.base import BaseUserTestCase
 class ClientsListDetailTests(BaseUserTestCase):
     def setUp(self):
