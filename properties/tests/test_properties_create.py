@@ -1,4 +1,3 @@
-from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -6,37 +5,10 @@ from accounts.models import CustomUser
 from properties.models import Property
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-
-class PropertiesCreateTests(TestCase):
+from common_tests.base import BaseUserTestCase
+class PropertiesCreateTests(BaseUserTestCase):
     def setUp(self):
-        # * Create viewer user
-        self.viewer_user = CustomUser.objects.create_user(
-            email="vieweruser@test.com",
-            password="viewerpassword123",
-            first_name="Viewer",
-            last_name="User",
-        )
-        self.viewer_user.role = "viewer"
-        self.viewer_user.save()
-
-        # * Create agent user
-        self.agent_user = CustomUser.objects.create_user(
-            email="agentuser@test.com",
-            password="agentpassword123",
-            first_name="Agent",
-            last_name="User",
-        )
-        self.agent_user.role = "agent"
-        self.agent_user.save()
-
-
-        # * ApiClient instance
-        self.client = APIClient()
-
-    # ! Helper function to get JWT token
-    def get_jwt_token(self, user):
-        refresh = RefreshToken.for_user(user)
-        return str(refresh.access_token)
+        super().setUp()
     
     # ! Test for agent user creating a property
     def test_agent_user_create_property(self):

@@ -1,4 +1,3 @@
-from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -6,28 +5,10 @@ from accounts.models import CustomUser
 from properties.models import Property, PropertyImage
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-
-class PropertiesDeleteTests(TestCase):
+from common_tests.base import BaseUserTestCase
+class PropertiesDeleteTests(BaseUserTestCase):
     def setUp(self):
-        # * Create viewer user
-        self.viewer_user = CustomUser.objects.create_user(
-            email="viewer@test.com",
-            password="viewerpassword123",
-            first_name="Viewer",
-            last_name="User",
-        )
-        self.viewer_user.role = "viewer"
-        self.viewer_user.save()
-
-        # * Create agent1 user
-        self.agent1_user = CustomUser.objects.create_user(
-            email="agent1@test.com",
-            password="agent1password123",   
-            first_name="Agent1",
-            last_name="User",
-        )
-        self.agent1_user.role = "agent"
-        self.agent1_user.save()
+        super().setUp()
 
         # * Create agent2 user
         self.agent2_user = CustomUser.objects.create_user(
@@ -35,45 +16,26 @@ class PropertiesDeleteTests(TestCase):
             password="agent2password123",
             first_name="Agent2",
             last_name="User",
+            role="agent",
         )
-        self.agent2_user.role = "agent"
-        self.agent2_user.save()
-
-        # * Create admin user
-        self.admin_user = CustomUser.objects.create_user(
-            email="admin@test.com",
-            password="adminpassword123",
-            first_name="Admin",
-            last_name="User",
-        )
-        self.admin_user.role = "admin"
-        self.admin_user.save()
-
-        # * Create a property for agent1
+        
+        # * Create a property for agent
         self.property = Property.objects.create(
             title="Property 1",
             description="Property 1 Description",
             price=100000,
             address="123 Property Street",
-            owner=self.agent1_user,
+            owner=self.agent_user,
         )
         # * Add an initial image to the property
         self.initial_image = PropertyImage.objects.create(
             property=self.property,
             image=SimpleUploadedFile("initial_image.jpg", b"initial_image_data", content_type="image/jpeg"),
         )
-
-        # * ApiClient instance
-        self.client = APIClient()
-
-    # ! Helper function to get JWT token
-    def get_jwt_token(self, user):
-        refresh = RefreshToken.for_user(user)
-        return str(refresh.access_token)
     
-    # ! Test for agent1 user deleting their own property
-    def test_agent1_user_delete_own_property(self):
-        jwt_token = self.get_jwt_token(self.agent1_user)
+    # ! Test for agent user deleting their own property
+    def test_agent_user_delete_own_property(self):
+        jwt_token = self.get_jwt_token(self.agent_user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {jwt_token}")
 
         url = reverse("property-delete", args=[self.property.pk])
@@ -82,8 +44,8 @@ class PropertiesDeleteTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Property.objects.count(), 0)
 
-    # ! Test for agent2 user trying to delete agent1's property
-    def test_agent2_user_delete_agent1_property(self):
+    # ! Test for agent2 user trying to delete agent's property
+    def test_agent2_user_delete_agent_property(self):
         jwt_token = self.get_jwt_token(self.agent2_user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {jwt_token}")
 

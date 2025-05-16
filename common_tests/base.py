@@ -35,7 +35,7 @@ class BaseUserTestCase(TestCase):
         )
         
         # * APIClient instance
-        self.api_client = APIClient()
+        self.client = APIClient()
 
     # ! Helper function to get JWT token
     def get_jwt_token(self, user):
