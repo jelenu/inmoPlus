@@ -1,5 +1,7 @@
 from django.test import TestCase
+from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.models import CustomUser
 from properties.models import Property
 from django.urls import reverse
@@ -22,6 +24,14 @@ class PropertiesListTests(TestCase):
             price=100000,
             owner=self.user,
         )
+
+        # * ApiClient instance
+        self.client = APIClient()
+
+    # ! Helper function to get JWT token
+    def get_jwt_token(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
     
     # ! Test for an authenticated user accessing properties list
     def test_authenticated_user_access_properties_list(self):
