@@ -5,7 +5,6 @@ class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = ['id', 'name', 'email', 'phone', 'notes', 'agent']
-        read_only_fields = ['agent']
 
     def validate_email(self, value):
         if Client.objects.filter(email=value).exists():
