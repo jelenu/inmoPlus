@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import visits
+from .models import Visit
 from .serializers import VisitSerializer
 from .permissions import IsAgentOrAdmin
 
@@ -11,8 +11,8 @@ class VisitListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.role == 'admin':
-            return visits.objects.all()
-        return visits.objects.filter(agent=user)
+            return Visit.objects.all()
+        return Visit.objects.filter(agent=user)
 
     def perform_create(self, serializer):
         serializer.save(agent=self.request.user)
@@ -24,5 +24,5 @@ class VisitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.role == 'admin':
-            return visits.objects.all()
-        return visits.objects.filter(agent=user)
+            return Visit.objects.all()
+        return Visit.objects.filter(agent=user)

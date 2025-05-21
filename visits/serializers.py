@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import visits
+from .models import Visit
 from clients.models import Client
 from properties.models import Property
 from django.utils import timezone
 
 class VisitSerializer(serializers.ModelSerializer):
     class Meta:
-        model = visits
+        model = Visit
         fields = ['id', 'property', 'client', 'agent', 'date', 'status', 'notes']
 
     def validate(self, data):

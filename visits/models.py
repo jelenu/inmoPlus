@@ -3,7 +3,7 @@ from properties.models import Property
 from clients.models import Client
 from django.conf import settings
 
-class visits(models.Model):
+class Visit(models.Model):
     property = models.ForeignKey(
         Property,
         on_delete=models.CASCADE,
