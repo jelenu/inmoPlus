@@ -105,8 +105,6 @@ class ContractsCreateTests(BaseUserTestCase):
         }
 
         response = self.client.post(url, data, format='multipart')
-        print(response.status_code)
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("You can only create contracts for your own properties.", str(response.data))
 
