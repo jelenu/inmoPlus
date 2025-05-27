@@ -7,6 +7,7 @@ from properties.models import Property
 from visits.models import Visit
 from datetime import datetime
 from django.utils import timezone
+from datetime import timedelta
 
 class VisitsListDetailTests(BaseUserTestCase):
     def setUp(self):
@@ -43,7 +44,7 @@ class VisitsListDetailTests(BaseUserTestCase):
         self.visit = Visit.objects.create(
             client=self.client1,
             property=self.property,
-            date = timezone.make_aware(datetime.strptime("2023-10-01 00:00:00", "%Y-%m-%d %H:%M:%S")),
+            date = timezone.now() + timedelta(days=1),
             status="scheduled",
             agent=self.agent_user,
         )
