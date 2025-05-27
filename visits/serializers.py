@@ -8,6 +8,7 @@ class VisitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Visit
         fields = ['id', 'property', 'client', 'agent', 'date', 'status', 'notes']
+        read_only_fields = ['agent']
 
     def validate(self, data):
         request = self.context['request']
@@ -17,15 +18,18 @@ class VisitSerializer(serializers.ModelSerializer):
         if data['date'] < timezone.now():
             raise serializers.ValidationError("Visit date cannot be in the past.")
 
-        # Validate client exists and belongs to agent
-        client = data.get('client')
-        if not Client.objects.filter(id=client.id, agent=user).exists():
-            raise serializers.ValidationError("Client does not exist or does not belong to you.")
 
-        # Validate property exists and belongs to agent
-        property = data.get('property')
-        if not Property.objects.filter(id=property.id, owner=user).exists():
-            raise serializers.ValidationError("Property does not exist or does not belong to you.")
+        # If user is not admin, enforce ownership checks
+        if not user.role == 'admin':
+            # Validate client exists and belongs to agent
+            client = data.get('client')
+            if not Client.objects.filter(id=client.id, agent=user).exists():
+                raise serializers.ValidationError("Client does not exist or does not belong to you.")
+
+            # Validate property exists and belongs to agent
+            property = data.get('property')
+            if not Property.objects.filter(id=property.id, owner=user).exists():
+                raise serializers.ValidationError("Property does not exist or does not belong to you.")
 
         return data
 
