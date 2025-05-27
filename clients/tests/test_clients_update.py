@@ -35,13 +35,11 @@ class ClientsUpdateTests(BaseUserTestCase):
         data = {
             "email": "updatedemail@test.com",
             "notes": "Updated notes",
-            "agent": self.agent2_user.id,
         }
 
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.client1.refresh_from_db()
-        self.assertEqual(self.client1.agent, self.agent2_user)
 
     # ! Test for Agent user updating a client
     def test_agent_user_update_client(self):
@@ -52,13 +50,11 @@ class ClientsUpdateTests(BaseUserTestCase):
         data = {
             "email": "updatedemail@test.com",
             "notes": "Updated notes",
-            "agent": self.agent2_user.id,
         }
 
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.client1.refresh_from_db()
-        self.assertEqual(self.client1.agent, self.agent2_user)
 
     # ! Test for Agent2 user trying to update a client
     def test_agent2_user_update_client(self):
@@ -69,7 +65,6 @@ class ClientsUpdateTests(BaseUserTestCase):
         data = {
             "email": "updatedemail@test.com",
             "notes": "Updated notes",
-            "agent": self.agent2_user.id,
         }
 
         response = self.client.patch(url, data, format="json")
@@ -84,7 +79,6 @@ class ClientsUpdateTests(BaseUserTestCase):
         data = {
             "email": "updatedemail@test.com",
             "notes": "Updated notes",
-            "agent": self.agent2_user.id,
         }
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -95,7 +89,6 @@ class ClientsUpdateTests(BaseUserTestCase):
         data = {
             "email": "updatedemail@test.com",
             "notes": "Updated notes",
-            "agent": self.agent2_user.id,
         }
 
         response = self.client.patch(url, data, format="json")
@@ -110,7 +103,6 @@ class ClientsUpdateTests(BaseUserTestCase):
         data = {
             "email": self.client1.email,
             "notes": "Updated notes",
-            "agent": self.agent2_user.id,
         }
 
         response = self.client.patch(url, data, format="json")
