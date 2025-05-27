@@ -31,20 +31,24 @@ class ContractSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = self.context['request'].user
 
-        start_date = data.get('start_date')
-        end_date = data.get('end_date')
+        instance = getattr(self, 'instance', None)
+
+        start_date = data.get('start_date') or (instance.start_date if instance else None)
+        end_date = data.get('end_date')  or (instance.end_date if instance else None)
+
         if start_date and end_date and end_date < start_date:
-            raise serializers.ValidationError("End date cannot be before start date.")
+            raise serializers.ValidationError({"end_date": "End date cannot be before start date."})
+
 
         property = data.get('property')
         client = data.get('client')
         if user.role == 'agent':
-            if property.owner != user:
+            if property and property.owner != user:
                 raise serializers.ValidationError("You can only create contracts for your own properties.")
-            if client.agent != user:
+            if client and client.agent != user:
                 raise serializers.ValidationError("You can only create contracts for your own clients.")
 
-        if property.status != 'available':
+        if property and property.status != 'available':
             raise serializers.ValidationError("Property must be available to create a contract.")
 
         if Contract.objects.filter(property=property, status='signed').exists():
