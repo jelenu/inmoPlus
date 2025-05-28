@@ -32,13 +32,13 @@ class FavoriteViewSet(viewsets.ViewSet):
             return Response({"status": "removed"})
         return Response({"status": "added"})
 
-@extend_schema(tags=["Contact"])
+@extend_schema(tags=["Contact Forms"])
 class ContactFormCreateView(generics.CreateAPIView):
     queryset = ContactForm.objects.all()
     serializer_class = ContactFormSerializer
     permission_classes = [IsViewer]
 
-@extend_schema(tags=["Contact"])
+@extend_schema(tags=["Contact Forms"])
 class ContactFormListView(generics.ListAPIView):
     serializer_class = ContactFormSerializer
     permission_classes = [IsAdminOrAgent]
@@ -51,7 +51,7 @@ class ContactFormListView(generics.ListAPIView):
             return ContactForm.objects.filter(property__owner=user)
         return ContactForm.objects.none()
 
-@extend_schema(tags=["Contact"])
+@extend_schema(tags=["Contact Forms"])
 class ContactFormDetailView(generics.RetrieveAPIView):
     serializer_class = ContactFormSerializer
     permission_classes = [IsAuthenticated]
@@ -63,7 +63,7 @@ class ContactFormDetailView(generics.RetrieveAPIView):
         elif user.role == 'agent':
             return ContactForm.objects.filter(property__owner=user)
         return ContactForm.objects.none()
-@extend_schema(tags=["Contact"])
+@extend_schema(tags=["Contact Forms"])
 class ContactFormDestroyView(generics.DestroyAPIView):
     serializer_class = ContactFormSerializer
     permission_classes = [IsAuthenticated]
