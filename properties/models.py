@@ -5,10 +5,10 @@ class Property(models.Model):
 
     #Choices for property status
     STATUS_CHOICES = [
-        ("available", "Disponible"),
-        ("sold", "Vendida"),
-        ("rented", "Alquilada"),
-        ("reserved", "Reservada"),
+        ("available", "Available"),
+        ("sold", "Sold"),
+        ("rented", "Rented"),
+        ("reserved", "Reserved"),
     ]
 
     title = models.CharField(max_length=255, verbose_name="Título")
