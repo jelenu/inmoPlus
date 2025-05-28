@@ -7,9 +7,11 @@ from .models import Favorite
 from .serializers import FavoriteSerializer
 from properties.models import Property
 from drf_spectacular.utils import extend_schema
+from .permissions import IsViewer
+
 @extend_schema(tags=["Favorites"])
 class FavoriteViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsViewer]
 
     def list(self, request):
         favorites = Favorite.objects.filter(user=request.user)
