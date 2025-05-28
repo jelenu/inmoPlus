@@ -38,3 +38,17 @@ class ContactFormCreateView(generics.CreateAPIView):
     queryset = ContactForm.objects.all()
     serializer_class = ContactFormSerializer
     permission_classes = [IsViewer]
+
+@extend_schema(tags=["Contact"])
+class ContactFormListView(generics.ListAPIView):
+    serializer_class = ContactFormSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return ContactForm.objects.all()
+        elif user.role == 'agent':
+            return ContactForm.objects.filter(property__owner=user)
+
+        return ContactForm.objects.none()
