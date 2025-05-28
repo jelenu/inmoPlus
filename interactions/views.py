@@ -2,7 +2,6 @@ from rest_framework import viewsets, status, generics
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from .models import Favorite, ContactForm
 from .serializers import FavoriteSerializer, ContactFormSerializer
 from properties.models import Property
@@ -52,3 +51,29 @@ class ContactFormListView(generics.ListAPIView):
             return ContactForm.objects.filter(property__owner=user)
 
         return ContactForm.objects.none()
+
+@extend_schema(tags=["Contact"])
+class ContactFormDetailView(generics.RetrieveAPIView):
+    serializer_class = ContactFormSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return ContactForm.objects.all()
+        elif user.role == 'agent':
+            return ContactForm.objects.filter(property__owner=user)
+        return ContactForm.objects.none()
+@extend_schema(tags=["Contact"])
+class ContactFormDestroyView(generics.DestroyAPIView):
+    serializer_class = ContactFormSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return ContactForm.objects.all()
+        elif user.role == 'agent':
+            return ContactForm.objects.filter(property__owner=user)
+        return ContactForm.objects.none()
+
