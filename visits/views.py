@@ -10,6 +10,8 @@ class VisitListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAgentOrAdmin]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Visit.objects.none()
         user = self.request.user
         if user.role == 'admin':
             return Visit.objects.all()
@@ -24,6 +26,8 @@ class VisitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAgentOrAdmin]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Visit.objects.none()
         user = self.request.user
         if user.role == 'admin':
             return Visit.objects.all()

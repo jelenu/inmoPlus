@@ -7,8 +7,12 @@ from contracts.models import Contract
 from visits.models import Visit
 from django.utils import timezone
 from django.db import models
-from drf_spectacular.utils import extend_schema
-@extend_schema(tags=["Dashboard"])
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+
+@extend_schema(
+    tags=["Dashboard"],
+    responses={200: OpenApiResponse(description="Dashboard data")}
+)
 class DashboardView(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -10,6 +10,8 @@ class ContractListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAgentOrAdminContract]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Contract.objects.none()
         user = self.request.user
         if user.role == 'admin':
             return Contract.objects.all()
@@ -24,6 +26,8 @@ class ContractRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAgentOrAdminContract]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Contract.objects.none()
         user = self.request.user
         if user.role == 'admin':
             return Contract.objects.all()

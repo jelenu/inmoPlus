@@ -22,7 +22,7 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
 
-@extend_schema(tags=["Accounts"])
+@extend_schema(tags=["Accounts"], responses=UserSerializer)
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 

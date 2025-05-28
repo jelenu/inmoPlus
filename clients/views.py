@@ -10,6 +10,10 @@ class ClientListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAgentOrAdminClient]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Client.objects.none()
+
+        
         user = self.request.user
         if user.role == 'admin':
             return Client.objects.all()
@@ -23,6 +27,8 @@ class ClientRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAgentOrAdminClient]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Client.objects.none()
         user = self.request.user
         if user.role == 'admin':
             return Client.objects.all()
