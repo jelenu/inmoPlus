@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'visits',
     'contracts',
     'dashboard',
+    'interactions',
 ]
 
 MIDDLEWARE = [
