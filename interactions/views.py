@@ -1,10 +1,10 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Favorite
-from .serializers import FavoriteSerializer
+from .models import Favorite, ContactForm
+from .serializers import FavoriteSerializer, ContactFormSerializer
 from properties.models import Property
 from drf_spectacular.utils import extend_schema
 from .permissions import IsViewer
@@ -32,3 +32,9 @@ class FavoriteViewSet(viewsets.ViewSet):
             favorite.delete()
             return Response({"status": "removed"})
         return Response({"status": "added"})
+
+@extend_schema(tags=["Contact"])
+class ContactFormCreateView(generics.CreateAPIView):
+    queryset = ContactForm.objects.all()
+    serializer_class = ContactFormSerializer
+    permission_classes = [IsViewer]
