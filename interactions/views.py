@@ -6,7 +6,7 @@ from .models import Favorite, ContactForm
 from .serializers import FavoriteSerializer, ContactFormSerializer
 from properties.models import Property
 from drf_spectacular.utils import extend_schema
-from .permissions import IsViewer
+from .permissions import IsViewer, IsAdminOrAgent
 
 @extend_schema(tags=["Favorites"])
 class FavoriteViewSet(viewsets.ViewSet):
@@ -41,7 +41,7 @@ class ContactFormCreateView(generics.CreateAPIView):
 @extend_schema(tags=["Contact"])
 class ContactFormListView(generics.ListAPIView):
     serializer_class = ContactFormSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminOrAgent]
 
     def get_queryset(self):
         user = self.request.user
@@ -49,7 +49,6 @@ class ContactFormListView(generics.ListAPIView):
             return ContactForm.objects.all()
         elif user.role == 'agent':
             return ContactForm.objects.filter(property__owner=user)
-
         return ContactForm.objects.none()
 
 @extend_schema(tags=["Contact"])

@@ -2,7 +2,6 @@ from rest_framework import status
 from django.urls import reverse
 from accounts.models import CustomUser
 from common_tests.base import BaseUserTestCase
-from interactions.models import Favorite
 from properties.models import Property
 
 class ContactFormCreateTests(BaseUserTestCase):
@@ -103,4 +102,4 @@ class ContactFormCreateTests(BaseUserTestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        
+
