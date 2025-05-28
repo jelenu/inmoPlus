@@ -5,14 +5,24 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import CustomUser
 from .serializers import RegisterSerializer, UserSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView as SimpleJWTLoginView, TokenRefreshView as SimpleJWTRefreshView
+from drf_spectacular.utils import extend_schema
 
-# Create your views here.
+@extend_schema(tags=["Accounts"])
+class TokenObtainPairView(SimpleJWTLoginView):
+    pass
 
+@extend_schema(tags=["Accounts"])
+class TokenRefreshView(SimpleJWTRefreshView):
+    pass
+
+@extend_schema(tags=["Accounts"])
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
 
+@extend_schema(tags=["Accounts"])
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
