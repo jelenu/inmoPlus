@@ -222,6 +222,6 @@ This project is licensed under the MIT License.
 ## 👨‍💻 About Me
 
 Developed by Jesús León Núñez — Backend Web Developer.  
-📧 [jesusleon2700@gmail.com] | 💼 [[LinkedIn](https://www.linkedin.com/in/jesus-leon-nu%C3%B1ez/)] | 💻 [[GitHub](https://github.com/jelenu/)]
+📧 [jesusleon2700@gmail.com] | 💼 [[LinkedIn](https://www.linkedin.com/in/jelenu/)] | 💻 [[GitHub](https://github.com/jelenu/)]
 
 ---
